@@ -12,9 +12,14 @@ public class PlayerController : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip crashSound;
     public float jumpForce = 10;
+    public bool canDoubleJump;
     public float gravityModifier;
     public bool isOnGround = true;
     public bool gameOver;
+    private GameManager gameManager;
+    public bool doubleTime = true;
+    
+
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -28,12 +33,30 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Space) && isOnGround && !gameOver)
-        {
+        {   
+            
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isOnGround = false;
             playerAnim.SetTrigger("Jump_trig");
             dirtParticle.Stop();
             playerAudio.PlayOneShot(jumpSound, 1.0f);
+            canDoubleJump = true;
+        }
+        else if(Input.GetKeyDown(KeyCode.Space) && canDoubleJump && !gameOver)
+        {
+            playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            canDoubleJump = false;
+        }
+        else if(Input.GetKeyDown(KeyCode.LeftShift) && !gameOver && doubleTime)
+        {
+            Time.timeScale = 1.5f;
+            doubleTime = false;
+            
+        }
+        else if(Input.GetKeyDown(KeyCode.LeftShift) && !doubleTime && !gameOver)
+        {
+            Time.timeScale = 1.0f;
+            doubleTime = true;
         }
     }
 
@@ -55,5 +78,7 @@ public class PlayerController : MonoBehaviour
             playerAudio.PlayOneShot(crashSound, 1.0f);
             
        }
+       
+
     }
 }
