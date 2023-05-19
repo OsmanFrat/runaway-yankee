@@ -17,7 +17,9 @@ public class PlayerController : MonoBehaviour
     public bool isOnGround = true;
     public bool gameOver;
     private GameManager gameManager;
+    public GameObject deathMenu;
     public bool doubleTime = true;
+    
     
 
     void Start()
@@ -25,7 +27,9 @@ public class PlayerController : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         playerAnim = GetComponent<Animator>();
         playerAudio = GetComponent<AudioSource>();
+        Physics.gravity = new Vector3(0, -9.8f, 0);
         Physics.gravity *= gravityModifier;
+        deathMenu.SetActive(false);
 
     }
 
@@ -58,6 +62,7 @@ public class PlayerController : MonoBehaviour
             Time.timeScale = 1.0f;
             doubleTime = true;
         }
+
     }
 
     private void OnCollisionEnter(Collision collision) 
@@ -76,6 +81,8 @@ public class PlayerController : MonoBehaviour
             explosionParticle.Play();
             dirtParticle.Stop();
             playerAudio.PlayOneShot(crashSound, 1.0f);
+            deathMenu.SetActive(true);
+            
             
        }
        
